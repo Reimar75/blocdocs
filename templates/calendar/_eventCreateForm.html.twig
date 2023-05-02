@@ -1,0 +1,19 @@
+{{ form_start(form, {attr: {id: 'form'}}) }}
+{{ form_widget(form.name, {attr: {class: 'w-full text-xl', 'placeholder': 'Training ' ~ dateOutput}}) }}
+<span class="help mb-5 mt-1">{{ form_help(form.name) }}</span>
+<div class="color-picker !mt-0">
+	{% for choice in form.color %}
+		<label class="{{ choice.vars.value }}{{ choice.vars.value == form.vars.value.color ? ' active' }}">
+			{{ form_widget(choice, {attr: {class: 'hidden'}}) }}			
+			<span aria-hidden="true" data-action="click->calendar#chooseColorPicker" data-value="{{ choice.vars.value }}"></span>
+		</label>
+	{% endfor %}
+</div>
+<div class="buttons">
+	<button type="button" class="btn-cancel" onclick="closeModal(this);">Abbrechen</button>
+	<button type="submit" class="btn-submit" data-action="click->calendar#formSubmit" data-form="form">Speichern</button>
+</div>
+<div class="hidden">
+	{{ form_rest(form) }}
+</div>
+{{ form_end(form) }}

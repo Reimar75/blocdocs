@@ -1,0 +1,23 @@
+{{ form_start(form, {attr: {id: 'form'}}) }}
+{{ form_widget(form.name, {attr: {class: 'w-full mb-4', 'placeholder': 'Training bearbeiten'}}) }}
+{{ form_widget(form.date) }}
+<div class="color-picker mb-5">
+	{% for choice in form.color %}
+		<label class="{{ choice.vars.value }}{{ choice.vars.value == form.vars.value.color ? ' active' }}">
+			{{ form_widget(choice, {attr: {class: 'hidden'}}) }}
+			<span aria-hidden="true" data-action="click->calendar#chooseColorPicker" data-value="{{ choice.vars.value }}"></span>
+		</label>
+	{% endfor %}
+</div>
+{{ form_widget(form.time) }}
+<div class="buttons">
+	<button type="button" class="btn-remove" data-action="click->calendar#formSubmit" data-form="form-remove">Löschen</button>
+	<button type="button" class="btn-cancel" onclick="closeModal(this);">Abbrechen</button>
+	<button type="submit" class="btn-submit" data-action="click->calendar#formSubmit" data-form="form">Speichern</button>
+</div>
+{{ form_rest(form) }}
+{{ form_end(form) }}
+
+{{ form_start(formRemove, {attr: {id: 'form-remove'}}) }}
+{{ form_rest(formRemove) }}
+{{ form_end(formRemove) }}
