@@ -6,7 +6,7 @@
 				<span class="week-number">{{ week.start|date('W')}}</span>
 				{{ week.start|date('M d.') ~ '-' ~ week.end|date('d.') }}
 			</h2>
-			<div class="grid md:grid-cols-5 lg:grid-cols-7 gap-1">
+			<div class="grid md:grid-cols-5 lg:grid-cols-7 gap-0.5">
 				{% for day in week.days %}
 					{% set isToday = day|date('ymd') == " now"|date('ymd') %}
 					<div>
@@ -37,7 +37,7 @@
 			</div>
 
 			{% if week.time > 0 %}
-				<div class="relative p-0.5 bg-white rounded-lg shadow mt-1">
+				<div class="p-0.5 bg-white rounded-lg shadow mt-1 mx-2 sm:mx-0">
 					<div class="overflow-hidden text-xs flex">
 						{% for color, data in week.colors %}
 							<div style="width: {{ data.percentage }}%" class="{{ loop.first ? 'rounded-l-lg' }} {{ loop.last ? 'rounded-r-lg' }} shadow-none flex flex-col text-center whitespace-nowrap justify-center {{ color }}">

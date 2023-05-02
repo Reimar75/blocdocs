@@ -202,7 +202,7 @@ class CalendarController extends AbstractController
 
             foreach ($week['colors'] as &$color) {
                 $colorTime = $color['time'];
-                $percentage = ($colorTime / $week['time']) * 100;
+                $percentage = $week['time'] > 0 ? ($colorTime / $week['time']) * 100 : 100;
                 $color['time'] = $colorTime;
                 $color['percentage'] = \round($percentage, 2);
             }

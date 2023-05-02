@@ -19,7 +19,7 @@ header {
 }
 
 .calendar .day {
-    @apply shadow hover:ring-2 cursor-pointer px-2 pt-1 pb-2  min-h-[150px] rounded-lg  bg-white m-2 sm:m-0 overflow-y-auto;
+    @apply shadow hover:ring-2 cursor-pointer px-2 pt-1 pb-2 min-h-[160px] rounded-lg bg-white m-2 sm:m-0 overflow-y-auto;
 }
 
 .calendar .day small {
@@ -27,7 +27,7 @@ header {
 }
 
 .calendar .day#today small {
-    @apply text-white bg-blue-500 rounded p-0.5;
+    @apply text-white bg-blue-500 rounded py-0.5 px-1;
 }
 
 .calendar .day .event {
