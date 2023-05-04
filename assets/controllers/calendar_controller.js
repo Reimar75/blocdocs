@@ -5,11 +5,7 @@ export default class extends Controller {
         // document.getElementById('today').focus();
     }
 
-    eventCreate(event) {
-        openModal('modal-event', event.target.getAttribute('data-url'));
-    }
-
-    eventEdit(event) {
+    handleEvent(event) {
         var url = this.getAttributeFromElementOrParents(event.target, 'data-url');
 
         if (url) {

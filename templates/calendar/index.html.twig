@@ -6,24 +6,21 @@
 				<span class="week-number">{{ week.start|date('W')}}</span>
 				{{ week.start|date('M d.') ~ '-' ~ week.end|date('d.') }}
 			</h2>
-			<div class="grid md:grid-cols-5 lg:grid-cols-7 gap-0.5">
+			<div class="grid md:grid-cols-5 lg:grid-cols-7 gap-1">
 				{% for day in week.days %}
 					{% set isToday = day|date('ymd') == " now"|date('ymd') %}
+					{% set isFuture = day|date('ymd') > " now"|date('ymd') %}
 					<div>
 						<small class="block mb-1 ml-2 text-xs">{{ day|date('D') }}</small>
-						<div tabindex="{{ loop.parent.loop.index }}" class="day" {{ isToday ? 'id="today"' }} data-action="click->calendar#eventCreate keydown.enter->calendar#eventCreate" data-url="{{ path('app_calendar_event_create', {date: day|date('Y-m-d')}) }}" data-date="{{ day|date('Y-m-d') }}">
+						<div tabindex="{{ loop.parent.loop.index }}" class="day{{ isFuture ? ' future' }}" {{ isToday ? 'id="today"' }} data-action="click->calendar#handleEvent keydown.enter->calendar#handleEvent" data-url="{{ path('app_calendar_event_create', {date: day|date('Y-m-d')}) }}" data-date="{{ day|date('Y-m-d') }}">
 							<small>{{ day|date('d') }}</small>
 							{% if events[day|date('Y-m-d')] is defined %}
 								{% for event in events[day|date('Y-m-d')] %}
-									<div class="flex flex-wrap event {{ event.color }}" data-action="click->calendar#eventEdit" data-url="{{ path('app_calendar_event_edit', {event: event.id}) }}">
+									<div class="flex flex-wrap event {{ event.color }}" data-action="click->calendar#handleEvent" data-url="{{ path('app_calendar_event_edit', {event: event.id}) }}">
 										<span class="flex-none">{{ event.name }}</span>
 										{% if event.time %}
 											<span class="grow text-right">
-												<span
-													class="whitespace-nowrap">
-													{# <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 inline -mt-0.5">
-																											<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
-																										</svg> #}
+												<span class="whitespace-nowrap">
 													{{ event.time|minutes_to_hours }}
 												</span>
 											</span>
@@ -35,12 +32,11 @@
 					</div>
 				{% endfor %}
 			</div>
-
 			{% if week.time > 0 %}
 				<div class="p-0.5 bg-white rounded-lg shadow mt-1 mx-2 sm:mx-0">
 					<div class="overflow-hidden text-xs flex">
 						{% for color, data in week.colors %}
-							<div style="width: {{ data.percentage }}%" class="{{ loop.first ? 'rounded-l-lg' }} {{ loop.last ? 'rounded-r-lg' }} shadow-none flex flex-col text-center whitespace-nowrap justify-center {{ color }}">
+							<div style="width: {{ data.percentage }}%" class="hover-disable {{ loop.first ? 'rounded-l-lg' }} {{ loop.last ? 'rounded-r-lg' }} shadow-none flex flex-col text-center whitespace-nowrap justify-center {{ color }}">
 								{{ data.time|minutes_to_hours }}
 							</div>
 						{% endfor %}
@@ -52,9 +48,7 @@
 						</div>
 					</div>
 				</div>
-
 			{% endif %}
-
 		{% endfor %}
 		<div id="modal-event" class="modal hidden" role="dialog" aria-modal="true">
 			<div class="overlay"></div>

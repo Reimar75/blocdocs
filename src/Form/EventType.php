@@ -16,7 +16,7 @@ class EventType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'help' => 'Z.B.: 3h Bouldern, 1,5 Std. Ausgleichstraining, 1 Stunde Campus-Board etc.',
+                'help' => 'Z.B.: 3h Bouldern, 1,5 Std Ausgleichstraining, 30 min Sit-Ups etc.',
                 'attr' => [
                     'autofocus' => true,
                     'autocomplete' => 'off',

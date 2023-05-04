@@ -32,21 +32,23 @@ class Event
     #[ORM\PrePersist]
     public function handleTime(): void
     {
-        $pattern = '/(\d+(?:[\.,]\d+)?)\s*(?:stunden?|std|hours?|h|minuten?|min)/i';
+        $matchHours = 'h|std|stunden';
+        $matchMinutes = 'm|min|minuten';
+        $pattern = '/(\d+(?:[\.,]\d+)?)\s*(?:(?:' . $matchHours . '?)|(?:' . $matchMinutes . '?))/i';
         $string = $this->getName();
 
-        if (preg_match($pattern, $string, $matches)) {
+        if (\preg_match($pattern, $string, $matches)) {
             $timeString = $matches[1];
-            $timeString = str_replace(',', '.', $timeString);
+            $timeString = \str_replace(',', '.', $timeString);
             $timeInMinutes = 0;
 
-            if (stripos($matches[0], 'h') !== false) {
+            if (\preg_match('/' . $matchHours . '/i', $matches[0])) {                
                 $timeInMinutes = (float) $timeString * 60;
             } else {
                 $timeInMinutes = (float) $timeString;
             }
 
-            $string = trim(str_replace($matches[0], '', $string));
+            $string = \trim(\str_replace($matches[0], '', $string));
 
             $this->setName($string);
             $this->setTime($timeInMinutes);

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 html {
-    @apply bg-gray-100;
+    @apply bg-gray-50;
 }
 
 header {
@@ -32,6 +32,14 @@ header {
 
 .calendar .day .event {
     @apply rounded text-xs mt-1 px-2 py-0.5;
+}
+
+.calendar .day.future {
+    @apply bg-gray-100 shadow-none;
+}
+
+.calendar .day.future .event {
+    @apply opacity-60 italic;
 }
 
 .modal {
@@ -160,4 +168,8 @@ input[type="radio"]:not(:checked):active {
 
 .color-picker label.purple {
     @apply ring-violet-600;
+}
+
+.hover-disable {
+    pointer-events: none !important;
 }
