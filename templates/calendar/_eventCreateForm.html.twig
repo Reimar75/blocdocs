@@ -1,5 +1,5 @@
 {{ form_start(form, {attr: {id: 'form'}}) }}
-{{ form_widget(form.name, {attr: {class: 'w-full text-xl', placeholder: 'Training ' ~ dateOutput}}) }}
+{{ form_widget(form.name, {attr: {class: 'w-full text-xl', placeholder: 'calendar.form.field.name.placeholder.create'|trans({'%date%': dateOutput})}}) }}
 <span class="help mb-5 mt-1">{{ form_help(form.name) }}</span>
 <div class="color-picker !mt-0">
 	{% for choice in form.color %}
@@ -10,8 +10,8 @@
 	{% endfor %}
 </div>
 <div class="buttons">
-	<button type="button" class="btn-cancel" onclick="closeModal(this);">Abbrechen</button>
-	<button type="submit" class="btn-submit" data-action="click->calendar#formSubmit" data-form="form">Speichern</button>
+	<button type="button" class="btn-cancel" onclick="closeModal(this);">{{ 'base.form.button.cancel'|trans }}</button>
+	<button type="submit" class="btn-create" data-action="click->calendar#formSubmit" data-form="form">{{ 'base.form.button.create'|trans }}</button>
 </div>
 <div class="hidden">
 	{{ form_rest(form) }}

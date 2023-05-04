@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Form\EventType;
 use App\Entity\Event;
 use App\Repository\EventRepository;
@@ -14,7 +15,7 @@ use App\Repository\EventRepository;
 #[Route('/calendar')]
 class CalendarController extends AbstractController
 {
-    public function __construct(private EventRepository $eventRepository)
+    public function __construct(private EventRepository $eventRepository, private TranslatorInterface $translator)
     {
     }
 
@@ -157,8 +158,11 @@ class CalendarController extends AbstractController
     private function getDateOutput(\DateTime $date): string
     {
         return match ($date->format('Y-m-d')) {
-            \date('Y-m-d') => 'heute',
-            \date('Y-m-d', \strtotime('-1 day')) => 'gestern',
+            \date('Y-m-d') => $this->translator->trans('base.time.output.today'),
+            \date('Y-m-d', \strtotime('-2 day')) => $this->translator->trans('base.time.output.before_yesterday'),
+            \date('Y-m-d', \strtotime('-1 day')) => $this->translator->trans('base.time.output.yesterday'),
+            \date('Y-m-d', \strtotime('+1 day')) => $this->translator->trans('base.time.output.tomorrow'),
+            \date('Y-m-d', \strtotime('+2 day')) => $this->translator->trans('base.time.output.after_tomorrow'),
             default => $date->format('D, d.m.')
         };
     }

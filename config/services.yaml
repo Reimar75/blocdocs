@@ -23,3 +23,8 @@ services:
     App\Twig\AppExtension:
         tags:
             - { name: twig.extension }
+
+    App\Form\EventType:
+        arguments:
+            $translator: '@translator'
+        tags: ['form.type']

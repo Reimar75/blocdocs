@@ -1,0 +1,27 @@
+base:
+  form:
+    button:
+      cancel: Abbrechen
+      save: Speichern
+      create: Anlegen
+      update: Aktualisieren
+      remove: Löschen
+  time:
+    output: 
+      today: heute
+      before_yesterday: vorgestern
+      yesterday: gestern
+      tomorrow: morgen
+      after_tomorrow: übermorgen
+      format:
+        short: "%time%h"
+calendar:
+  form:
+    field:
+      name:
+        help: "Z.B.: 3h Bouldern, 1,5 Std Ausgleichstraining, 30 min Sit-Ups etc."
+        placeholder:
+          create: "Training %date%"
+          update: Training bearbeiten
+      time:
+        placeholder: Zeit

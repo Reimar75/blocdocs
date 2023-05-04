@@ -1,5 +1,5 @@
 {{ form_start(form, {attr: {id: 'form'}}) }}
-{{ form_widget(form.name, {attr: {class: 'w-full mb-4', 'placeholder': 'Training bearbeiten'}}) }}
+{{ form_widget(form.name, {attr: {class: 'w-full mb-4', 'placeholder': 'calendar.form.field.name.placeholder.update'|trans}}) }}
 {{ form_widget(form.date) }}
 <div class="color-picker mb-5">
 	{% for choice in form.color %}
@@ -11,9 +11,9 @@
 </div>
 {{ form_widget(form.time) }}
 <div class="buttons">
-	<button type="button" class="btn-remove" data-action="click->calendar#formSubmit" data-form="form-remove">Löschen</button>
-	<button type="button" class="btn-cancel" onclick="closeModal(this);">Abbrechen</button>
-	<button type="submit" class="btn-submit" data-action="click->calendar#formSubmit" data-form="form">Speichern</button>
+	<button type="button" class="btn-remove" data-action="click->calendar#formSubmit" data-form="form-remove">{{ 'base.form.button.remove'|trans }}</button>
+	<button type="button" class="btn-cancel" onclick="closeModal(this);">{{ 'base.form.button.cancel'|trans }}</button>
+	<button type="submit" class="btn-update" data-action="click->calendar#formSubmit" data-form="form">{{ 'base.form.button.update'|trans }}</button>
 </div>
 {{ form_rest(form) }}
 {{ form_end(form) }}

@@ -9,14 +9,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EventType extends AbstractType
 {
+    public function __construct(private TranslatorInterface $translator)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('name', TextType::class, [
-                'help' => 'Z.B.: 3h Bouldern, 1,5 Std Ausgleichstraining, 30 min Sit-Ups etc.',
+                'help' => 'calendar.form.field.name.help',
                 'attr' => [
                     'autofocus' => true,
                     'autocomplete' => 'off',
@@ -31,7 +36,7 @@ class EventType extends AbstractType
             ])
             ->add('time', ChoiceType::class, [
                 'choices' => $this->getChoicesTime(),
-                'placeholder' => 'Zeit',
+                'placeholder' => 'calendar.form.field.time.placeholder',
                 'required' => false,
             ]);
     }
@@ -53,7 +58,7 @@ class EventType extends AbstractType
             $hours += $hours >=2 ? 0.5 : 0.25;
             $minutes = $hours * 60;
             $formattedHours = \number_format($hours, 2, ',', '');
-            $array[$formattedHours . ' Std.'] = $minutes;            
+            $array[$this->translator->trans('base.time.output.format.short', ['%time%' => $formattedHours])] = $minutes;            
         }
 
         return $array;
