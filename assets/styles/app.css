@@ -3,23 +3,31 @@
 @tailwind utilities;
 
 html {
-    @apply bg-gray-50;
+    @apply bg-white;
+}
+   
+.calendar .filters, .calendar .week {
+    @apply px-2;
 }
 
-header {
-    @apply bg-gray-800 text-gray-400 uppercase;
+.calendar .weeks {
+    @apply mt-14;
 }
 
 .calendar h2 {
-    @apply font-medium text-sm mb-2 px-2;
+    @apply font-normal text-xs mb-1.5 text-gray-700 mt-5 uppercase;
 }
 
 .calendar h2 .week-number {
-    @apply bg-gray-200 p-1 text-xs text-gray-700 font-light rounded mr-1;
+    @apply bg-gray-100 p-1 text-xs text-gray-800 font-light mr-0.5 rounded;
+}
+
+.calendar .week .grid {
+    @apply md:grid-cols-5 lg:grid-cols-7 gap-0;
 }
 
 .calendar .day {
-    @apply shadow hover:ring-2 cursor-pointer px-2 pt-1 pb-2 min-h-[160px] rounded-lg bg-white m-2 sm:m-0 overflow-y-auto;
+    @apply border-t border-l cursor-pointer px-1 pt-0 pb-1 min-h-[180px] bg-white overflow-y-auto;     
 }
 
 .calendar .day small {
@@ -27,19 +35,31 @@ header {
 }
 
 .calendar .day#today small {
-    @apply text-white bg-blue-500 rounded py-0.5 px-1;
+    @apply text-white bg-blue-500 rounded py-0.5 px-1.5;
 }
 
 .calendar .day .event {
-    @apply rounded text-xs mt-1 px-2 py-0.5;
+    @apply rounded text-xs mt-0.5 px-1.5 py-0.5;
 }
 
 .calendar .day.future {
-    @apply bg-gray-100 shadow-none;
+    @apply bg-gray-50 shadow-none;
 }
 
 .calendar .day.future .event {
-    @apply opacity-60 italic;
+    @apply opacity-60 font-light italic;
+}
+
+.calendar .progress-wrapper {
+    @apply bg-white;
+}
+
+.calendar .progress-wrapper .progress {
+    @apply overflow-hidden text-xs flex text-center whitespace-nowrap justify-center rounded font-medium;
+}
+
+.calendar .blocks {
+    @apply cursor-pointer;
 }
 
 .modal {
@@ -91,7 +111,7 @@ form .help {
 }
 
 .btn-create {
-    @apply rounded-md bg-emerald-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800;
+    @apply rounded-md bg-lime-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-lime-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-800;
 }
 
 .btn-update {
@@ -107,27 +127,23 @@ form>div>label {
 }
 
 .red {
-    @apply bg-red-100 hover:bg-red-200 text-red-700;
-}
-
-.pink {
-    @apply bg-pink-100 hover:bg-pink-200 text-pink-800;
+    @apply bg-red-500 hover:bg-red-600 text-white;
 }
 
 .green {
-    @apply bg-emerald-100 hover:bg-emerald-200 text-emerald-700;
+    @apply bg-lime-600 hover:bg-lime-700 text-white;
 }
 
 .yellow {
-    @apply bg-amber-100 hover:bg-amber-200 text-amber-700;
+    @apply bg-amber-400 hover:bg-amber-500 text-white;
 }
 
 .blue {
-    @apply bg-blue-100 hover:bg-blue-200 text-blue-700;
+    @apply bg-blue-500 hover:bg-blue-600 text-white;
 }
 
 .purple {
-    @apply bg-violet-100 hover:bg-violet-200 text-violet-700;
+    @apply bg-violet-500 hover:bg-violet-600 text-white;
 }
 
 input[type="radio"]:checked:active {
@@ -143,7 +159,7 @@ input[type="radio"]:not(:checked):active {
 }
 
 .color-picker label {
-    @apply relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none hover:ring-1 ring-offset-1;
+    @apply relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none hover:ring-2 ring-offset-1;
 }
 
 .color-picker label.active {
@@ -151,23 +167,19 @@ input[type="radio"]:not(:checked):active {
 }
 
 .color-picker span {
-    @apply h-6 w-6 rounded-full border-none;
+    @apply h-5 w-5 rounded-full border-none;
 }
 
 .color-picker label.red {
     @apply ring-red-600;
 }
 
-.color-picker label.pink {
-    @apply ring-pink-600;
-}
-
 .color-picker label.green {
-    @apply ring-emerald-600;
+    @apply ring-lime-700;
 }
 
 .color-picker label.yellow {
-    @apply ring-amber-600;
+    @apply ring-amber-500;
 }
 
 .color-picker label.blue {

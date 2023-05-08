@@ -6,119 +6,37 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use App\Form\EventType;
-use App\Entity\Event;
 use App\Repository\EventRepository;
+use App\Repository\BlockRepository;
 
-#[Route('/calendar')]
 class CalendarController extends AbstractController
 {
-    public function __construct(private EventRepository $eventRepository, private TranslatorInterface $translator)
+    public function __construct(protected EventRepository $eventRepository, protected TranslatorInterface $translator, protected BlockRepository $blockRepository)
     {
     }
 
-    #[Route('/', name: 'app_calendar')]
+    #[Route('/calendar', name: 'app_calendar')]
     public function index(): Response
     {
         $currentDate = new \DateTime();
         $startDate = (clone $currentDate)->modify('-3 months');
         $endDate = $currentDate;
 
-        if (\date('N') >= 4) {
+        if (\date('N') >= 6) {
             $endDate->modify('+7 days');
         }
 
         $weeks = $this->generateWeeks($startDate, $endDate);
         $events = $this->getEvents($startDate);
-        $this->calcData($weeks, $events);
+        $blocks = $this->blockRepository->findByDateWithin($startDate, $endDate);
+        $this->calcData($weeks, $events, $blocks);
 
         return $this->render('calendar/index.html.twig', [
             'weeks' => $weeks,
             'events' => $events,
+            'blocks' => $blocks,
         ]);
-    }
-
-    #[Route('/create/{date}', name: 'app_calendar_event_create')]
-    public function create(Request $request, $date): Response
-    {
-        $date = new \DateTime($date);
-        $event = (new Event())->setDate($date)->setColor('blue');
-        $formAction = $this->generateUrl('app_calendar_event_create_submit');
-        $form = $this->getFormEvent($event, $formAction);
-        $dateOutput = $this->getDateOutput($date);
-
-        return $this->render('calendar/_eventCreateForm.html.twig', [
-            'form' => $form->createView(),
-            'dateOutput' => $dateOutput,
-        ]);
-    }
-
-    #[Route('/create-submit', name: 'app_calendar_event_create_submit')]
-    public function createSubmit(Request $request): Response
-    {
-        $event = new Event();
-        $form = $this->getFormEvent($event);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->eventRepository->save($event, true);
-        } else {
-            \dd($form->getErrors());
-        }
-
-        return $this->redirectToRoute('app_calendar');
-    }
-
-    #[Route('/edit/{event}', name: 'app_calendar_event_edit')]
-    public function edit(Request $request, Event $event): Response
-    {
-        $formAction = $this->generateUrl('app_calendar_event_edit_submit', ['event' => $event->getId()]);
-        $form = $this->getFormEvent($event, $formAction);
-
-        return $this->render('calendar/_eventEditForm.html.twig', [
-            'form' => $form->createView(),
-            'formRemove' => $this->getFormRemoveEvent($event)->createView(),
-        ]);
-    }
-
-    #[Route('/edit-submit/{event}', name: 'app_calendar_event_edit_submit')]
-    public function editSubmit(Request $request, Event $event): Response
-    {
-        $form = $this->getFormEvent($event);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->eventRepository->save($event, true);
-        } else {
-            \dd($form->getErrors());
-        }
-
-        return $this->redirectToRoute('app_calendar');
-    }
-
-    #[Route('/remove-submit/{event}', name: 'app_calendar_event_remove_submit')]
-    public function removeSubmit(Request $request, Event $event): Response
-    {
-        $form = $this->getFormRemoveEvent($event);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->eventRepository->remove($event, true);
-        } else {
-            \dd($form->getErrors());
-        }
-
-        return $this->redirectToRoute('app_calendar');
-    }
-
-    private function getFormEvent(Event $event, string $action = ''): FormInterface
-    {
-        $options['colors'] = $this->getColors();
-        $options['action'] = $action;
-
-        return $this->createForm(EventType::class, $event, $options);
     }
 
     private function generateWeeks(\DateTime $startDate, \DateTime $endDate): array
@@ -143,30 +61,6 @@ class CalendarController extends AbstractController
         return \array_reverse($weeks);
     }
 
-    private function generateDays(\DateTime $startDate, \DateTime $endDate): array
-    {
-        $days = [];
-
-        while ($startDate <= $endDate) {
-            $days[] = clone $startDate;
-            $startDate->modify('+1 day');
-        }
-
-        return $days;
-    }
-
-    private function getDateOutput(\DateTime $date): string
-    {
-        return match ($date->format('Y-m-d')) {
-            \date('Y-m-d') => $this->translator->trans('base.time.output.today'),
-            \date('Y-m-d', \strtotime('-2 day')) => $this->translator->trans('base.time.output.before_yesterday'),
-            \date('Y-m-d', \strtotime('-1 day')) => $this->translator->trans('base.time.output.yesterday'),
-            \date('Y-m-d', \strtotime('+1 day')) => $this->translator->trans('base.time.output.tomorrow'),
-            \date('Y-m-d', \strtotime('+2 day')) => $this->translator->trans('base.time.output.after_tomorrow'),
-            default => $date->format('D, d.m.')
-        };
-    }
-
     private function getEvents(\DateTime $dateFrom): array
     {
         $events = [];
@@ -179,20 +73,38 @@ class CalendarController extends AbstractController
         return $events;
     }
 
-    private function getFormRemoveEvent(Event $event): FormInterface
+    private function generateDays(\DateTime $startDate, \DateTime $endDate): array
     {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('app_calendar_event_remove_submit', ['event' => $event->getId()]))
-            ->getForm();
+        $days = [];
+
+        while ($startDate <= $endDate) {
+            $days[] = clone $startDate;
+            $startDate->modify('+1 day');
+        }
+
+        return $days;
     }
 
-    private function calcData(array &$weeks, array $events): void
+    protected function getDateOutput(\DateTime $date): string
+    {
+        return match ($date->format('Y-m-d')) {
+            \date('Y-m-d') => $this->translator->trans('base.time.output.today'),
+            \date('Y-m-d', \strtotime('-2 day')) => $this->translator->trans('base.time.output.before_yesterday'),
+            \date('Y-m-d', \strtotime('-1 day')) => $this->translator->trans('base.time.output.yesterday'),
+            \date('Y-m-d', \strtotime('+1 day')) => $this->translator->trans('base.time.output.tomorrow'),
+            \date('Y-m-d', \strtotime('+2 day')) => $this->translator->trans('base.time.output.after_tomorrow'),
+            default => $date->format('D, d.m.')
+        };
+    }
+
+    private function calcData(array &$weeks, array $events, array $blocks): void
     {
         $colors = $this->getColors();
 
         foreach ($weeks as &$week) {
             $week['time'] = 0;
             $week['colors'] = [];
+            $week['blocks'] = [];
 
             foreach ($week['days'] as $day) {
                 $date = $day->format('Y-m-d');
@@ -217,10 +129,27 @@ class CalendarController extends AbstractController
     
                 return $posA - $posB;
             });
-        }
+
+            foreach ($blocks as $block) {                
+                $isWithinTheWeek = $block->getDateFrom() >= $week['start'] && $block->getDateTo() <= $week['end'];
+                $startsInWeek = $block->getDateFrom() >= $week['start'] && $block->getDateFrom() <= $week['end'] && !$isWithinTheWeek;
+                $endsInWeek = $block->getDateTo() >= $week['start'] && $block->getDateTo() <= $week['end'] && !$isWithinTheWeek;
+                $overlapsTheWeek = $block->getDateFrom() < $week['start'] && $block->getDateTo() > $week['end'];                
+
+                if ($isWithinTheWeek || $startsInWeek || $endsInWeek || $overlapsTheWeek) {
+                    $week['blocks'][] = [
+                        'block' => $block,
+                        'starts' => $startsInWeek ? $block->getDateFrom()->format('w') : false,
+                        'ends' => $endsInWeek ? $block->getDateTo()->format('w') : false,
+                        'overlaps' => $overlapsTheWeek,
+                        'within' => $isWithinTheWeek ? ['starts' => $block->getDateFrom()->format('N'), 'ends' => $block->getDateTo()->format('N')] : false,
+                    ];
+                }                
+            }   
+        }        
     }
 
-    private function getColors(): array
+    protected function getColors(): array
     {
         return ['green', 'yellow', 'blue', 'purple', 'red'];
     }

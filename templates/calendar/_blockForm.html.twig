@@ -1,23 +1,31 @@
 {{ form_start(form, {attr: {id: 'form'}}) }}
-{{ form_widget(form.name, {attr: {class: 'w-full mb-4', 'placeholder': 'calendar.event.form.field.name.placeholder.update'|trans}}) }}
-{{ form_widget(form.date) }}
-<div class="color-picker mb-5">
+{{ form_widget(form.name, {attr: {class: 'w-full text-xl mb-3', placeholder: 'calendar.block.form.field.name.placeholder.create'|trans}}) }}
+{{ form_widget(form.dateFrom) }} - 
+{{ form_widget(form.dateTo) }}
+<div class="color-picker">
 	{% for choice in form.color %}
 		<label class="{{ choice.vars.value }}{{ choice.vars.value == form.vars.value.color ? ' active' }}">
-			{{ form_widget(choice, {attr: {class: 'hidden'}}) }}
+			{{ form_widget(choice, {attr: {class: 'hidden'}}) }}			
 			<span aria-hidden="true" data-action="click->calendar#chooseColorPicker" data-value="{{ choice.vars.value }}"></span>
 		</label>
 	{% endfor %}
 </div>
-{{ form_widget(form.time) }}
 <div class="buttons">
 	<button type="button" class="btn-remove" data-action="click->calendar#formSubmit" data-form="form-remove">{{ 'base.form.button.remove'|trans }}</button>
 	<button type="button" class="btn-cancel" onclick="closeModal(this);">{{ 'base.form.button.cancel'|trans }}</button>
+	{% if form.vars.value.id %}
 	<button type="submit" class="btn-update" data-action="click->calendar#formSubmit" data-form="form">{{ 'base.form.button.update'|trans }}</button>
+	{% else %}
+	<button type="submit" class="btn-create" data-action="click->calendar#formSubmit" data-form="form">{{ 'base.form.button.create'|trans }}</button>
+	{% endif %}
 </div>
-{{ form_rest(form) }}
+<div class="hidden">
+	{{ form_rest(form) }}
+</div>
 {{ form_end(form) }}
 
-{{ form_start(formRemove, {attr: {id: 'form-remove'}}) }}
-{{ form_rest(formRemove) }}
-{{ form_end(formRemove) }}
+{% if form.vars.value.id %}
+	{{ form_start(formRemove, {attr: {id: 'form-remove'}}) }}
+	{{ form_rest(formRemove) }}
+	{{ form_end(formRemove) }}
+{% endif %}

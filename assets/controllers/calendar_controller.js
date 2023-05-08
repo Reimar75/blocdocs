@@ -5,18 +5,18 @@ export default class extends Controller {
         // document.getElementById('today').focus();
     }
 
-    handleEvent(event) {
+    fetch(event) {
         var url = this.getAttributeFromElementOrParents(event.target, 'data-url');
 
         if (url) {
-            openModal('modal-event', url);
+            openModal('modal-calendar', url);
         }
 
         event.stopPropagation();
     }
 
-    chooseColorPicker(event) {
-        var radioButtons = document.querySelectorAll(`input[name="event[color]"]`);
+    chooseColorPicker(event) {        
+        var radioButtons = event.target.closest('form').querySelectorAll(`input[name$="[color]"]`);
         var value = event.target.getAttribute('data-value');
 
         radioButtons.forEach(radioButton => {
