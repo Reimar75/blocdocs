@@ -95,7 +95,7 @@ class CalendarController extends AbstractController
             \date('Y-m-d', \strtotime('-1 day')) => $this->translator->trans('base.time.output.yesterday'),
             \date('Y-m-d', \strtotime('+1 day')) => $this->translator->trans('base.time.output.tomorrow'),
             \date('Y-m-d', \strtotime('+2 day')) => $this->translator->trans('base.time.output.after_tomorrow'),
-            default => $date->format('D, d.m.')
+            default => \ucfirst($date->format('D, d.m.')),
         };
     }
 

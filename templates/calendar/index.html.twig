@@ -12,7 +12,7 @@
 				<div class="week">
 					<h2>
 						<span class="week-number">{{ week.start|date('W')}}</span>
-						{{ week.start|date('M d.') ~ '-' ~ week.end|date('d.') }}
+						{{ week.start|date('d.m.') ~ '-' ~ week.end|date('d.m.') }}
 					</h2>
 					{% if week.blocks is not empty %}
 						{% for block in week.blocks %}
