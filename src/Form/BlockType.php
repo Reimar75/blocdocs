@@ -29,6 +29,7 @@ class BlockType extends AbstractType
                 ]
             ])
             ->add('description', TextareaType::class, [
+                'required' => false,
                 'attr' => [
                     'placeholder' => 'calendar.block.form.field.description.placeholder'
                 ]

@@ -9,10 +9,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Repository\EventRepository;
 use App\Repository\BlockRepository;
+use App\Repository\CommentRepository;
 
 class CalendarController extends AbstractController
 {
-    public function __construct(protected EventRepository $eventRepository, protected TranslatorInterface $translator, protected BlockRepository $blockRepository)
+    public function __construct(protected EventRepository $eventRepository, protected TranslatorInterface $translator, protected BlockRepository $blockRepository, protected CommentRepository $commentRepository)
     {
     }
 
@@ -30,7 +31,8 @@ class CalendarController extends AbstractController
         $weeks = $this->generateWeeks($startDate, $endDate);
         $events = $this->getEvents($startDate);
         $blocks = $this->blockRepository->findByDateWithin($startDate, $endDate);
-        $this->calcData($weeks, $events, $blocks);
+        $comments = $this->commentRepository->findByDateWithin($startDate, $endDate);
+        $this->aggregateData($weeks, $events, $blocks, $comments);
 
         return $this->render('calendar/index.html.twig', [
             'weeks' => $weeks,
@@ -97,7 +99,7 @@ class CalendarController extends AbstractController
         };
     }
 
-    private function calcData(array &$weeks, array $events, array $blocks): void
+    private function aggregateData(array &$weeks, array $events, array $blocks, array $comments): void
     {
         $colors = $this->getColors();
 
@@ -105,6 +107,7 @@ class CalendarController extends AbstractController
             $week['time'] = 0;
             $week['colors'] = [];
             $week['blocks'] = [];
+            $week['comments'] = [];
 
             foreach ($week['days'] as $day) {
                 $date = $day->format('Y-m-d');
@@ -146,6 +149,12 @@ class CalendarController extends AbstractController
                     ];
                 }                
             }   
+
+            foreach ($comments as $comment) {
+                if ($comment->getDate() >= $week['start'] && $comment->getDate() <= $week['end']) {
+                    $week['comments'][$comment->getDate()->format('Y-m-d')] = $comment;
+                }
+            }
         }        
     }
 

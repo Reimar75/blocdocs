@@ -22,7 +22,7 @@ calendar:
         name:
           help: "Z.B.: 3h Bouldern, 1,5 Std Ausgleichstraining, 30 min Sit-Ups etc."
           placeholder:
-            create: "Training %date%"
+            create: "Training %date% anlegen"
             update: Training bearbeiten
         time:
           placeholder: Zeit
@@ -35,3 +35,10 @@ calendar:
             update: Block bearbeiten
         description:
           placeholder: Beschreibung zum Block
+  comment:
+    form:
+      field:
+        message:
+          placeholder: "Kommentar zu %date% schreiben"
+      button:
+        create: Kommentieren

@@ -17,12 +17,11 @@ class EventController extends CalendarController
         $date = new \DateTime($date);
         $event = (new Event())->setDate($date)->setColor('blue');
         $formAction = $this->generateUrl('app_calendar_event_create_submit');
-        $form = $this->getForm($event, $formAction);
-        $dateOutput = $this->getDateOutput($date);
+        $form = $this->getForm($event, $formAction);        
 
         return $this->render('calendar/_eventCreateForm.html.twig', [
             'form' => $form->createView(),
-            'dateOutput' => $dateOutput,
+            'dateOutput' => $this->getDateOutput($date),
         ]);
     }
 

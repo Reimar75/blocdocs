@@ -1,0 +1,23 @@
+{{ form_start(form, {attr: {id: 'form'}}) }}
+{{ form_widget(form.message, {attr: {class: 'w-full h-48', autofocus: form.vars.value.id ?? true, placeholder: 'calendar.comment.form.field.message.placeholder'|trans({'%date%': dateOutput})|capitalize}}) }}
+<div class="buttons">
+	{% if form.vars.value.id %}
+	<button type="button" class="btn-remove" data-action="click->calendar#formSubmit" data-form="form-remove">{{ 'base.form.button.remove'|trans }}</button>
+	{% endif %}
+	<button type="button" class="btn-cancel" onclick="closeModal(this);">{{ 'base.form.button.cancel'|trans }}</button>
+	{% if form.vars.value.id %}
+	<button type="submit" class="btn-update" data-action="click->calendar#formSubmit" data-form="form">{{ 'base.form.button.update'|trans }}</button>
+	{% else %}
+	<button type="submit" class="btn-create" data-action="click->calendar#formSubmit" data-form="form">{{ 'calendar.comment.form.button.create'|trans }}</button>
+	{% endif %}
+</div>
+<div class="hidden">
+	{{ form_rest(form) }}
+</div>
+{{ form_end(form) }}
+
+{% if form.vars.value.id %}
+	{{ form_start(formRemove, {attr: {id: 'form-remove'}}) }}
+	{{ form_rest(formRemove) }}
+	{{ form_end(formRemove) }}
+{% endif %}
