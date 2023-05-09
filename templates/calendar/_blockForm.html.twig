@@ -11,7 +11,9 @@
 	{% endfor %}
 </div>
 <div class="buttons">
+	{% if form.vars.value.id %}
 	<button type="button" class="btn-remove" data-action="click->calendar#formSubmit" data-form="form-remove">{{ 'base.form.button.remove'|trans }}</button>
+	{% endif %}
 	<button type="button" class="btn-cancel" onclick="closeModal(this);">{{ 'base.form.button.cancel'|trans }}</button>
 	{% if form.vars.value.id %}
 	<button type="submit" class="btn-update" data-action="click->calendar#formSubmit" data-form="form">{{ 'base.form.button.update'|trans }}</button>
