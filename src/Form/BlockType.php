@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -27,7 +28,11 @@ class BlockType extends AbstractType
                     'autocomplete' => 'off',
                 ]
             ])
-            ->add('description')
+            ->add('description', TextareaType::class, [
+                'attr' => [
+                    'placeholder' => 'calendar.block.form.field.description.placeholder'
+                ]
+            ])
             ->add('color', ChoiceType::class, [
                 'choices' => \array_combine($options['colors'], $options['colors']),
                 'expanded' => true,

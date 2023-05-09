@@ -90,7 +90,7 @@ html {
     @apply fixed inset-0 bg-gray-500 bg-opacity-50 transition-opacity;
 }
 
-input[type=text], input[type=date], select {
+input[type=text], input[type=date], select, textarea {
     @apply rounded border-gray-300;
 }
 

@@ -10,6 +10,7 @@
 		</label>
 	{% endfor %}
 </div>
+{{ form_widget(form.description, {attr: {class: 'w-full mt-5'}}) }}
 <div class="buttons">
 	{% if form.vars.value.id %}
 	<button type="button" class="btn-remove" data-action="click->calendar#formSubmit" data-form="form-remove">{{ 'base.form.button.remove'|trans }}</button>

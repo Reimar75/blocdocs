@@ -33,3 +33,5 @@ calendar:
           placeholder:
             create: Neuen Block anlegen
             update: Block bearbeiten
+        description:
+          placeholder: Beschreibung zum Block
