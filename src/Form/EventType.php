@@ -22,8 +22,7 @@ class EventType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'help' => 'calendar.event.form.field.name.help',
-                'attr' => [
-                    'autofocus' => true,
+                'attr' => [                    
                     'autocomplete' => 'off',
                 ]
             ])

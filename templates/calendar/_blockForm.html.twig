@@ -1,5 +1,5 @@
 {{ form_start(form, {attr: {id: 'form'}}) }}
-{{ form_widget(form.name, {attr: {class: 'w-full text-xl mb-3', placeholder: 'calendar.block.form.field.name.placeholder.create'|trans}}) }}
+{{ form_widget(form.name, {attr: {class: 'w-full text-xl mb-3', autofocus: form.vars.value.id ?? true, placeholder: 'calendar.block.form.field.name.placeholder.create'|trans}}) }}
 {{ form_widget(form.dateFrom) }} - 
 {{ form_widget(form.dateTo) }}
 <div class="color-picker">

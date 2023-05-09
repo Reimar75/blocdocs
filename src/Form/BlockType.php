@@ -23,8 +23,7 @@ class BlockType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [                
-                'attr' => [
-                    'autofocus' => true,
+                'attr' => [                    
                     'autocomplete' => 'off',
                 ]
             ])
