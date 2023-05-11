@@ -1,4 +1,4 @@
-{{ form_start(form, {attr: {id: 'form'}}) }}
+{{ form_start(form, {attr: {id: 'form-comment'}}) }}
 {{ form_widget(form.message, {attr: {class: 'w-full h-48', autofocus: form.vars.value.id ?? true, placeholder: 'calendar.comment.form.field.message.placeholder'|trans({'%date%': dateOutput})|capitalize}}) }}
 <div class="buttons">
 	{% if form.vars.value.id %}
@@ -6,9 +6,9 @@
 	{% endif %}
 	<button type="button" class="btn-cancel" onclick="closeModal(this);">{{ 'base.form.button.cancel'|trans }}</button>
 	{% if form.vars.value.id %}
-	<button type="submit" class="btn-update" data-action="click->calendar#formSubmit" data-form="form">{{ 'base.form.button.update'|trans }}</button>
+	<button type="submit" class="btn-update" data-action="click->calendar#formSubmit" data-form="form-comment">{{ 'base.form.button.update'|trans }}</button>
 	{% else %}
-	<button type="submit" class="btn-create" data-action="click->calendar#formSubmit" data-form="form">{{ 'calendar.comment.form.button.create'|trans }}</button>
+	<button type="submit" class="btn-create" data-action="click->calendar#formSubmit" data-form="form-comment">{{ 'calendar.comment.form.button.create'|trans }}</button>
 	{% endif %}
 </div>
 <div class="hidden">

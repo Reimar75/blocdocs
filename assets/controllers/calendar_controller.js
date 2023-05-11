@@ -2,11 +2,23 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     connect() {
-        // document.getElementById('today').focus();
+        const showBlocks = localStorage.getItem('filter-toggle-blocks') === 'true';
+        const showTime = localStorage.getItem('filter-toggle-time') === 'true';
+
+        document.querySelectorAll('.blocks').forEach(element => {
+            element.classList.toggle('hidden', !showBlocks);
+        });
+
+        document.querySelectorAll('.time').forEach(element => {
+            element.classList.toggle('hidden', !showTime);
+        });
+
+        document.querySelector('#btn-toggle-blocks').classList.toggle('active', showBlocks);
+        document.querySelector('#btn-toggle-time').classList.toggle('active', showTime);
     }
 
     fetch(event) {
-        var url = this.getAttributeFromElementOrParents(event.target, 'data-url');
+        const url = this.getAttributeFromElementOrParents(event.target, 'data-url');
 
         if (url) {
             openModal('modal-calendar', url);
@@ -15,9 +27,9 @@ export default class extends Controller {
         event.stopPropagation();
     }
 
-    chooseColorPicker(event) {        
-        var radioButtons = event.target.closest('form').querySelectorAll('input[name$="[color]"]');
-        var value = event.target.getAttribute('data-value');
+    chooseColorPicker(event) {
+        const radioButtons = event.target.closest('form').querySelectorAll('input[name$="[color]"]');
+        const value = event.target.getAttribute('data-value');
 
         radioButtons.forEach(radioButton => {
             if (radioButton.value === value) {
@@ -38,8 +50,14 @@ export default class extends Controller {
             document.removeEventListener('turbo:render', freezePosition);
         };
 
+        const formId = event.target.getAttribute('data-form');
+
         document.addEventListener('turbo:render', freezePosition);
-        document.getElementById(event.target.getAttribute('data-form')).requestSubmit();
+        document.getElementById(formId).requestSubmit();
+
+        if ('form-block' === formId) {
+            localStorage.setItem('filter-toggle-block', true);
+        }
     }
 
     getAttributeFromElementOrParents(element, attribute) {
@@ -50,6 +68,21 @@ export default class extends Controller {
         }
 
         return null;
+    }
+
+    filterToggle(event) {
+        const button = event.target.closest('.btn-filter');
+        const items = this.getAttributeFromElementOrParents(button, 'data-items');
+        const className = '.' + items;
+        var isActive = null;
+
+        document.querySelectorAll(className).forEach(element => {
+            element.classList.toggle('hidden');
+            isActive = !element.classList.contains('hidden');
+        });
+
+        button.classList.toggle('active');
+        localStorage.setItem('filter-toggle-' + items, isActive);
     }
 
     test(event) {

@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 {% block body %}
 	<div class="calendar" data-controller="calendar">
-		<div class="filters grid grid-cols-2 border-b text-gray-700 uppercase py-2 text-sm fixed top-0 w-full bg-white">
-			<div>Bloc Docs</div>
+		<div class="filters grid grid-cols-2 border-b text-gray-700 uppercase py-1 text-sm fixed top-0 w-full bg-white z-10">
+			<div class="pt-0.5">Bloc Docs</div>
 			<div class="text-right">
-				<button data-action="click->calendar#fetch keydown.enter->calendar#fetch" data-url="{{ path('app_calendar_block_create') }}">+ Block</button>
+				{% include 'calendar/_filters.html.twig' %}
 			</div>
 		</div>
 		<div class="weeks">
@@ -14,9 +14,9 @@
 						<span class="week-number">{{ week.start|date('W')}}</span>
 						{{ week.start|date('d.m.') ~ '-' ~ week.end|date('d.m.') }}
 					</h2>
-					{% if week.blocks is not empty %}
+					{% if week.blocks is not empty %}						
 						{% for block in week.blocks %}
-							<div class="grid !gap-0 mb-0.5 blocks" data-action="click->calendar#fetch keydown.enter->calendar#fetch" data-url="{{ path('app_calendar_block_edit', {block: block.block.id}) }}">
+							<div class="grid !gap-0 mb-0.5 blocks hidden" data-action="click->calendar#fetch keydown.enter->calendar#fetch" data-url="{{ path('app_calendar_block_edit', {block: block.block.id}) }}">
 								{% if block.starts %}
 									{% set gridStyle = 'grid-column-start: ' ~ block.starts ~ '; grid-column-end: 8;' %}
 								{% elseif block.ends %}
@@ -82,18 +82,20 @@
 						{% endfor %}
 					</div>
 					{% if week.time > 0 %}
-						<div class="progress-wrapper mt-0.5">
-							<div class="progress">
-								{% for color, data in week.colors %}
-									<div style="width: {{ data.percentage }}%" class="hover-disable flex flex-col text-center whitespace-nowrap justify-center {{ color }}">
-										{{ data.time|minutes_to_hours }}
+						<div class="time hidden">
+							<div class="progress-wrapper mt-0.5">
+								<div class="progress">
+									{% for color, data in week.colors %}
+										<div style="width: {{ data.percentage }}%" class="hover-disable flex flex-col text-center whitespace-nowrap justify-center {{ color }}">
+											{{ data.time|minutes_to_hours }}
+										</div>
+									{% endfor %}
+									<div class="px-2 w-20 text-center whitespace-nowrap bg-gray-100 font-medium">
+										<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 inline -mt-0.5 ">
+											<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+										</svg>
+										{{ week.time|minutes_to_hours }}
 									</div>
-								{% endfor %}
-								<div class="px-2 w-20 text-center whitespace-nowrap bg-gray-100 font-medium">
-									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 inline -mt-0.5 ">
-										<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
-									</svg>
-									{{ week.time|minutes_to_hours }}
 								</div>
 							</div>
 						</div>

@@ -11,7 +11,7 @@ html {
 }
 
 .calendar .weeks {
-    @apply mt-14;
+    @apply mt-12;
 }
 
 .calendar h2 {
@@ -67,7 +67,7 @@ html {
 }
 
 .modal .modal-wrapper {
-    @apply fixed inset-0 z-10 overflow-y-auto p-4 sm:p-6 md:p-6;
+    @apply fixed inset-0 z-30 overflow-y-auto p-4 sm:p-6 md:p-6;
 }
 
 .modal-inner {
@@ -87,7 +87,7 @@ html {
 }
 
 .overlay {
-    @apply fixed inset-0 bg-gray-500 bg-opacity-50 transition-opacity;
+    @apply fixed inset-0 bg-gray-500 bg-opacity-50 transition-opacity z-20;
 }
 
 input[type=text], input[type=date], select, textarea {
@@ -116,6 +116,30 @@ form .help {
 
 .btn-update {
     @apply rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-800;
+}
+
+.filters button {
+    @apply rounded-md px-2 py-0.5 text-xs text-gray-600 ring-1 ring-inset ring-gray-300;
+}
+
+.filters .btn-filter svg.on {
+    @apply hidden;
+}
+
+.filters .btn-filter svg.off {
+    @apply inline;
+}
+
+.filters .btn-filter.active svg.on {
+    @apply inline;
+}
+
+.filters .btn-filter.active svg.off {
+    @apply hidden;
+}
+
+.filters button svg {
+    @apply w-4 h-4 -mt-0.5 mr-0.5;
 }
 
 .modal .buttons .btn-remove {

@@ -42,3 +42,11 @@ calendar:
           placeholder: "Kommentar zu %date% schreiben"
       button:
         create: Kommentieren
+  filter:
+    toggle:
+      button:
+        block: Blöcke
+        time: Zeiten
+    add:
+      button:
+        block: Block
