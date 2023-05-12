@@ -24,7 +24,7 @@ class CalendarController extends AbstractController
         $startDate = (clone $currentDate)->modify('-3 months');
         $endDate = $currentDate;
 
-        if (\date('N') >= 6) {
+        if (\date('N') >= 5) {
             $endDate->modify('+7 days');
         }
 

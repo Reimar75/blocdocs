@@ -2,7 +2,9 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>{% block title %}Blocdocs{% endblock %}</title>
+		<title>
+			{% block title %}Blocdocs{% endblock %}
+		</title>
 		<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/favicon/apple-touch-icon.png') }}">
 		<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/favicon/favicon-32x32.png') }}">
 		<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/favicon/favicon-16x16.png') }}">
@@ -15,15 +17,15 @@
 		{% endblock %}
 	</head>
 	<body>
-		<header>			
-		</header>
-		<main> 
+		<header></header>
+		<main>
 			{% block body %}{% endblock %}
 		</main>
 		<footer>
 			<div class="container mx-auto py-5 text-center text-sm text-gray-500">
-				<p class="mb-2">Wer nicht hooken kann, muss ballern</p>
 				<p>
+					Wer nicht hooken kann, muss ballern 
+					&bull;
 					<a href="https://github.com/Reimar75/blocdocs" target="_blank">https://github.com/Reimar75/blocdocs</a>
 				</p>
 			</div>

@@ -6,20 +6,16 @@ html {
     @apply bg-white;
 }
    
-.calendar .filters, .calendar .week {
+.calendar .filters {
     @apply px-2;
 }
 
 .calendar .weeks {
-    @apply mt-12;
+    @apply mx-2 mt-10 border-t border-x;
 }
 
-.calendar h2 {
-    @apply font-normal text-xs mb-1.5 text-gray-700 mt-5 uppercase;
-}
-
-.calendar h2 .week-number {
-    @apply bg-gray-100 p-1 text-xs text-gray-800 font-light mr-0.5 rounded;
+.calendar .weeks .info {
+    @apply text-xs text-gray-500 font-light bg-gray-100 py-1.5 border-b;
 }
 
 .calendar .week .grid {
@@ -27,11 +23,15 @@ html {
 }
 
 .calendar .day {
-    @apply border-t border-l cursor-pointer px-1 pt-0 pb-1 min-h-[180px] bg-white overflow-y-auto;     
+    @apply cursor-pointer px-1 pt-0 pb-1 min-h-[180px] bg-white overflow-y-auto border-l; 
 }
 
 .calendar .day small {
     @apply text-xs text-gray-500;
+}
+
+.calendar .day#today {
+    @apply bg-amber-50;
 }
 
 .calendar .day#today small {
