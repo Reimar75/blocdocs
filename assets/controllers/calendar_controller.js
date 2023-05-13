@@ -41,20 +41,36 @@ export default class extends Controller {
         });
     }
 
-    formSubmit(event) {
-        event.preventDefault();
+    toggleStar(event) {
+        event.stopPropagation();
+        this.preventScrolling();
+        
+        const form = document.getElementById('form-star');
+        const dateField = form.querySelector('#form_date');
+        const date = this.getAttributeFromElementOrParents(event.target, 'data-date');        
 
-        // prevent scrolling after form submit
-        const freezePosition = () => {
+        dateField.setAttribute('value', date);
+        form.requestSubmit();
+    }
+
+    preventScrolling() {        
+        function freezePosition() {
             window.Turbo.navigator.currentVisit.scrolled = true;
             document.removeEventListener('turbo:render', freezePosition);
-        };
+        }
+
+        document.addEventListener('turbo:render', freezePosition);
+    }
+
+    formSubmit(event) {
+        event.preventDefault();
+        this.preventScrolling();
 
         const formId = event.target.getAttribute('data-form');
 
-        document.addEventListener('turbo:render', freezePosition);
         document.getElementById(formId).requestSubmit();
 
+        // todo: create listener for that
         if ('form-block' === formId) {
             localStorage.setItem('filter-toggle-block', true);
         }

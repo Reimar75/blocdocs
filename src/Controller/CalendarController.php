@@ -6,14 +6,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use App\Repository\EventRepository;
 use App\Repository\BlockRepository;
 use App\Repository\CommentRepository;
+use App\Repository\StarRepository;
 
 class CalendarController extends AbstractController
 {
-    public function __construct(protected EventRepository $eventRepository, protected TranslatorInterface $translator, protected BlockRepository $blockRepository, protected CommentRepository $commentRepository)
+    public function __construct(protected EventRepository $eventRepository, protected TranslatorInterface $translator, protected BlockRepository $blockRepository, protected CommentRepository $commentRepository, protected StarRepository $starRepository)
     {
     }
 
@@ -32,13 +35,30 @@ class CalendarController extends AbstractController
         $events = $this->getEvents($startDate);
         $blocks = $this->blockRepository->findByDateWithin($startDate, $endDate);
         $comments = $this->commentRepository->findByDateWithin($startDate, $endDate);
-        $this->aggregateData($weeks, $events, $blocks, $comments);
+        $stars = $this->starRepository->findByDateWithin($startDate, $endDate);
+        $this->aggregateData($weeks, $events, $blocks, $comments, $stars);
 
         return $this->render('calendar/index.html.twig', [
             'weeks' => $weeks,
             'events' => $events,
-            'blocks' => $blocks,
+            'blocks' => $blocks,            
+            'formStar' => $this->getFormStar()->createView(),
         ]);
+    }
+
+    #[Route('/calendar/toggle-star', name: 'app_calendar_toggle_star')]
+    public function toggleStar(Request $request): Response
+    {
+        $form = $this->getFormStar();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {            
+            $this->starRepository->createOrRemoveByDate($form->getData()['date']);
+        } else {
+            \dd($form->getErrors());
+        }
+
+        return $this->redirectToRoute('app_calendar');
     }
 
     private function generateWeeks(\DateTime $startDate, \DateTime $endDate): array
@@ -99,7 +119,7 @@ class CalendarController extends AbstractController
         };
     }
 
-    private function aggregateData(array &$weeks, array $events, array $blocks, array $comments): void
+    private function aggregateData(array &$weeks, array $events, array $blocks, array $comments, array $stars): void
     {
         $colors = $this->getColors();
 
@@ -126,18 +146,18 @@ class CalendarController extends AbstractController
                 $color['percentage'] = \round($percentage, 2);
             }
 
-            \uksort($week['colors'], function($a, $b) use ($colors) {
+            \uksort($week['colors'], function ($a, $b) use ($colors) {
                 $posA = \array_search($a, $colors);
                 $posB = \array_search($b, $colors);
-    
+
                 return $posA - $posB;
             });
 
-            foreach ($blocks as $block) {                
+            foreach ($blocks as $block) {
                 $isWithinTheWeek = $block->getDateFrom() >= $week['start'] && $block->getDateTo() <= $week['end'];
                 $startsInWeek = $block->getDateFrom() >= $week['start'] && $block->getDateFrom() <= $week['end'] && !$isWithinTheWeek;
                 $endsInWeek = $block->getDateTo() >= $week['start'] && $block->getDateTo() <= $week['end'] && !$isWithinTheWeek;
-                $overlapsTheWeek = $block->getDateFrom() < $week['start'] && $block->getDateTo() > $week['end'];                
+                $overlapsTheWeek = $block->getDateFrom() < $week['start'] && $block->getDateTo() > $week['end'];
 
                 if ($isWithinTheWeek || $startsInWeek || $endsInWeek || $overlapsTheWeek) {
                     $week['blocks'][] = [
@@ -147,19 +167,32 @@ class CalendarController extends AbstractController
                         'overlaps' => $overlapsTheWeek,
                         'within' => $isWithinTheWeek ? ['starts' => $block->getDateFrom()->format('N'), 'ends' => $block->getDateTo()->format('N')] : false,
                     ];
-                }                
-            }   
+                }
+            }
 
             foreach ($comments as $comment) {
                 if ($comment->getDate() >= $week['start'] && $comment->getDate() <= $week['end']) {
                     $week['comments'][$comment->getDate()->format('Y-m-d')] = $comment;
                 }
             }
-        }        
+
+            foreach ($stars as $star) {
+                if ($star->getDate() >= $week['start'] && $star->getDate() <= $week['end']) {
+                    $week['stars'][$star->getDate()->format('Y-m-d')] = $star;
+                }
+            }
+        }
     }
 
     protected function getColors(): array
     {
         return ['green', 'yellow', 'blue', 'purple', 'red'];
+    }
+
+    private function getFormStar(): FormInterface
+    {
+        return $this->createFormBuilder(null, [
+            'action' => $this->generateUrl('app_calendar_toggle_star'),
+        ])->add('date', DateType::class, ['widget' => 'single_text'])->getForm();
     }
 }
